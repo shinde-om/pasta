@@ -1,0 +1,91 @@
+#include<stdio.h>
+#define SIZE 10
+#define INFINITY 999
+
+int cam[SIZE][SIZE],n;
+
+void getInput()
+{
+	int i,j;
+	printf("\n Enter the Cost Adjacency matrix in the matrix form:\n");
+	for(i=0;i<n;i++)
+		for(j=0;j<n;j++)
+		{
+			scanf("%d",&cam[i][j]);
+			if(cam[i][j]==0)
+				cam[i][j]=INFINITY;
+		}
+}
+
+void displayPath(int dist[],int path[],int src,int dest)
+{
+	int i=dest;
+	printf("\n");
+	while(i!=src)
+	{
+		printf("%d<---",i);
+		i=path[i];
+	}
+	printf("%d, Distance = %d",i,dist[dest]);
+}
+
+void dijkstras(int dist[],int path[],int src, int dest)
+{
+	int s[SIZE],i,j,u,v,min;
+	for(i=0;i<n;i++)
+	{
+		dist[i]=cam[src][i];
+		s[i]=0;
+		path[i]=src;
+	}
+	s[src]=1;
+	for(i=1;i<n;i++)
+	{
+		min=INFINITY;
+		u=-1;
+		for(j=0;j<n;j++)
+		{
+			if(dist[j]< min && s[j]==0)
+			{
+				min=dist[j];
+				u=j;
+			}
+		}
+		if(u ==-1) return;
+		s[u] = 1;
+		if(u == dest) return;
+		for(v=0;v<n;v++)
+		{
+			if(dist[u]+ cam[u][v] < dist[v] && s[v]==0)
+			{
+				dist[v]=dist[u]+cam[u][v];
+				path[v]=u;
+			}
+		}
+	}
+}
+
+int main()
+{
+	int dist[SIZE],path[SIZE],src,i;
+	printf("\n Dijkstras Algorithm using Greedy Method");
+	printf("\n ***************************************");
+	printf("\n Enter the number of vertices in a graph--->");
+	scanf("%d",&n);
+	getInput();	
+	printf("\n Enter the source vertex-->");
+	scanf("%d",&src);
+	printf("\n The shortest paths from %d to all other vertices is:\n",src);
+	for(i=0;i<n;i++)
+	{
+		dijkstras(dist,path,src,i);
+		if(src==i)
+			printf("\n %d<---%d, Distance=0",src,i);
+		else if(dist[i]==INFINITY)
+			printf("\n %d is not reachable from %d",i,src);
+		     else
+			displayPath(dist,path,src,i);
+	}
+	printf("\n");
+}
+	

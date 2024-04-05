@@ -1,0 +1,46 @@
+#include <stdio.h>
+#define MAX_VERTICES 100
+
+int adjacencyMatrix[MAX_VERTICES][MAX_VERTICES];
+int visited[MAX_VERTICES];
+int result[MAX_VERTICES];
+int numVertices;
+
+void topologicalSortDFS(int vertex, int* index) {
+ 	visited[vertex] = 1;
+ 	for (int i = 0; i < numVertices; i++) {
+ 		if (adjacencyMatrix[vertex][i] && !visited[i]) {
+ 			topologicalSortDFS(i, index);
+ 		}
+ 	}
+ 	result[*index] = vertex;
+ 	(*index)--;
+}
+
+void topologicalSort() {
+	int index = numVertices - 1;
+	for (int i = 0; i < numVertices; i++) {
+ 		if (!visited[i]) {
+ 			topologicalSortDFS(i, &index);
+ 		}
+ 
+ 	}
+ 	printf("Topological Ordering: ");
+ 	for (int i = 0; i < numVertices; i++) {
+ 		printf("%d ", result[i]);
+ 	}
+}
+
+int main() {
+ 	numVertices = 6;
+ 
+ 	int edges[][2] = {{5, 2}, {5, 0}, {4, 0}, {4, 1}, {2, 3}, {3, 1}};
+ 
+ 	for (int i = 0; i < sizeof(edges) / sizeof(edges[0]); i++) {
+ 		int start = edges[i][0];
+ 		int end = edges[i][1];
+ 		adjacencyMatrix[start][end] = 1;
+ 	}
+	topologicalSort();
+	return 0;
+}
